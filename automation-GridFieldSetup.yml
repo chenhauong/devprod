@@ -1,32 +1,82 @@
 args:
-- description: columns for the grid field in comma separated format
+- description: columns for the grid field in comma separated format.
   name: keys
   required: true
-- description: value for 1st key (can be string or context path)
+- description: A value for the 1st key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
   name: val1
   required: true
-- description: value for 2nd key (can be string or context path)
+- description: A value for the 2nd key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
   name: val2
-- description: value for 3rd key (can be string or context path)
+- description: A value for the 3rd key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
   name: val3
-- description: value for 4th key (can be string or context path)
+- description: A value for the 4th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
   name: val4
-- description: value for 5th key (can be string or context path)
+- description: A value for the 5th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
   name: val5
-- description: Grid field to populate
+- description: A value for the 6th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val6
+- description: A value for the 7th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val7
+- description: A value for the 8th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val8
+- description: A value for the 9th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val9
+- description: A value for the 10th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val10
+- description: A value for the 11th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val11
+- description: A value for the 12th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val12
+- description: A value for the 13th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val13
+- description: A value for the 14th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val14
+- description: A value for the 15th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val15
+- description: A value for the 16th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val16
+- description: A value for the 17th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val17
+- description: A value for the 18th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val18
+- description: A value for the 19th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val19
+- description: A value for the 20th key. (Can be a string or context path or `TIMESTAMP`
+    to get the current timestamp in ISO format.)
+  name: val20
+- description: Grid field to populate.
   name: gridfield
   required: true
 - auto: PREDEFINED
   defaultValue: "false"
   description: whether to overwrite what is in the gridfield or not (default is to
-    append)
+    append).
   name: overwrite
   predefined:
   - "true"
   - "false"
 comment: |-
-  Automation used to more easily populate a grid field.  This is necessary when you want to assign certain values as static or if you have context paths that you will assign to different values as well.  Example of command:
-  `!GridFieldSetup keys=ip,src val1=${AWS.EC2.Instances.NetworkInterfaces.PrivateIpAddress} val2="AWS" gridfiled="gridfield"`
+  Automation used to more easily populate a grid field.  This is necessary when you want to assign certain values as static or if you have context paths that you will assign to different values as well.  Instead of a value you can enter `TIMESTAMP` to get the current timestamp in ISO format. For example:
+  `!GridFieldSetup keys=ip,src,timestamp val1=${AWS.EC2.Instances.NetworkInterfaces.PrivateIpAddress} val2="AWS" val3="TIMESTAMP" gridfiled="gridfield"`.
 commonfields:
   id: GridFieldSetup
   version: -1
@@ -34,7 +84,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 6.5.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -42,7 +92,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.10.10.48392
+dockerimage: demisto/python3:3.10.14.99144
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
@@ -52,15 +102,12 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('GridFieldSetup', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
 
 
 
 
-  from typing import Dict, List
-
-
-  def grid_field_setup(keys: List[str], vals: Dict, res_list: List) -> List[str]:
+  def grid_field_setup(keys: list[str], vals: dict, res_list: list) -> list[str]:
       """Returns a list of dictionaries based on the key/values provided.
       :type keys: ``str``
       :type vals: ``dict``
@@ -72,7 +119,10 @@ script: |
       """
       temp = {}
       for i, key in enumerate(keys, start=1):
-          temp[key] = vals[f'val{i}']
+          if vals[f'val{i}'] == "TIMESTAMP":
+              temp[key] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+          else:
+              temp[key] = vals[f'val{i}']
       res_list.append(temp)
 
       return res_list
@@ -81,7 +131,7 @@ script: |
   ''' COMMAND FUNCTION '''
 
 
-  def grid_field_setup_command(args: Dict[str, str]) -> CommandResults:
+  def grid_field_setup_command(args: dict[str, str]) -> CommandResults:
       keys = argToList(args.pop('keys', []))
       overwrite = args.pop('overwrite', False)
       gridfield = args.pop('gridfield', None)

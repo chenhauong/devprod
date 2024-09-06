@@ -11,10 +11,10 @@ args:
 - description: Column to search for value in, if not specified, entire CSV is parsed
     into the context.
   name: column
-- description: value to search for
+- description: value to search for.
   name: value
 - description: Extra row, in CSV format, to function as header if original does not
-    contain headers
+    contain headers.
   name: add_header_row
 comment: Parses a CSV and looks for a specific value in a specific column, returning
   a dict of the entire matching row. If no column value is specified, the entire CSV
@@ -26,7 +26,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -34,15 +34,15 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.9.7.24076
+dockerimage: demisto/python3:3.11.9.103066
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
 name: LookupCSV
 outputs:
-- contextPath: LookupCSV.result
+- contextPath: LookupCSV.Result
   description: List of result objects; either a list of dicts (with header_row) or
-    a list of lists (no header row)
+    a list of lists (no header row).
 - contextPath: LookupCSV.FoundResult
   description: Boolean, for whether the result was found in the CSV or not.
 - contextPath: LookupCSV.SearchValue
@@ -52,7 +52,7 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('LookupCSV', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
   """
   Given a CSV file in the War Room by entry ID, searches based on column and value.
   If the column is not present, simply parse the CSV into a list of lists or list of dicts (if header row supplied).

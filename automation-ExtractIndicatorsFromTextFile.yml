@@ -23,7 +23,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -31,39 +31,39 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.10.10.49934
+dockerimage: demisto/python3:3.10.14.99865
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
 name: ExtractIndicatorsFromTextFile
 outputs:
 - contextPath: Domain.Name
-  description: Extracted domains
+  description: Extracted domains.
   type: string
 - contextPath: Account.Email.Address
-  description: Extracted emails
+  description: Extracted emails.
   type: string
 - contextPath: File.MD5
-  description: Extracted MD5
+  description: Extracted MD5.
   type: string
 - contextPath: File.SHA1
-  description: Extracted SHA1
+  description: Extracted SHA1.
   type: string
 - contextPath: File.SHA256
-  description: Extracted SHA256
+  description: Extracted SHA256.
   type: string
 - contextPath: IP.Address
-  description: Extracted IPs
+  description: Extracted IPs.
   type: string
 - contextPath: URL.Data
-  description: Extracted URLs
+  description: Extracted URLs.
   type: string
 pswd: ""
 runas: DBotRole
 runonce: false
 script: |
   register_module_line('ExtractIndicatorsFromTextFile', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
 
 
 
@@ -134,7 +134,8 @@ script: |
           'Type': entryTypes['note'],
           'ContentsFormat': formats['text'],
           'Contents': indicators_hr,
-          'HumanReadable': string_to_markdown(indicators_hr)
+          'HumanReadable': string_to_markdown(indicators_hr),
+          'EntryContext': json.loads(indicators_hr)
       }
 
 

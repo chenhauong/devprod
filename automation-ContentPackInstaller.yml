@@ -25,7 +25,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 6.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -33,7 +33,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/xsoar-tools:1.0.0.46482
+dockerimage: demisto/xsoar-tools:1.0.0.104430
 engineinfo: {}
 mainengineinfo: {}
 name: ContentPackInstaller
@@ -52,11 +52,11 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('ContentPackInstaller', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
 
 
 
-  from packaging.version import parse, Version, LegacyVersion
+  from packaging.version import parse, Version
 
   SCRIPT_NAME = 'ContentPackInstaller'
 
@@ -67,15 +67,32 @@ script: |
       PACK_ID_VERSION_FORMAT = '{}::{}'
 
       def __init__(self, instance_name: str = None):
-          self.installed_packs: Dict[str, Union[Version, LegacyVersion]] = dict()
-          self.newly_installed_packs: Dict[str, Version] = dict()
-          self.already_on_machine_packs: Dict[str, Union[Version, LegacyVersion]] = dict()
-          self.packs_data: Dict[str, Dict[str, str]] = dict()
-          self.packs_dependencies: Dict[str, Dict[str, Dict[str, str]]] = dict()
-          self.packs_failed: Dict[str, str] = dict()
+          self.installed_packs: Dict[str, Version] = {}
+          self.newly_installed_packs: Dict[str, Version] = {}
+          self.already_on_machine_packs: Dict[str, Version] = {}
+          self.packs_data: Dict[str, Dict[str, str]] = {}
+          self.packs_dependencies: Dict[str, Dict[str, Dict[str, str]]] = {}
+          self.packs_failed: Dict[str, str] = {}
           self.instance_name: Optional[str] = instance_name
 
           self.get_installed_packs()
+
+      def _call_execute_command(self, command, args):
+          if self.instance_name:
+              args['using'] = self.instance_name
+
+          status, res = execute_command(
+              command,
+              args,
+              fail_on_error=False,
+          )
+
+          if not status:
+              error_message = f'{SCRIPT_NAME} - {res}'
+              demisto.debug(error_message)
+          if type(res) is list:
+              res = res[0]
+          return status, res
 
       def get_installed_packs(self) -> None:
           """Gets the current installed packs on the machine.
@@ -84,23 +101,9 @@ script: |
 
           args = {'uri': '/contentpacks/metadata/installed'}
 
-          if self.instance_name:
-              args['using'] = self.instance_name
-
-          status, res = execute_command(
-              'demisto-api-get',
-              args,
-              fail_on_error=False,
-          )
-
+          status, res = self._call_execute_command('core-api-get', args)
           if not status:
-              error_message = f'{SCRIPT_NAME} - {res}'
-              demisto.debug(error_message)
               return
-
-          # in some cases the command result returns as array with one response entry
-          if type(res) is list:
-              res = res[0]
 
           packs_data: List[Dict[str, str]] = res.get('response', [])
           for pack in packs_data:
@@ -124,18 +127,7 @@ script: |
 
           args = {'uri': f'/contentpacks/marketplace/{pack_id}'}
 
-          if self.instance_name:
-              args['using'] = self.instance_name
-
-          status, res = execute_command(
-              'demisto-api-get',
-              args,
-              fail_on_error=False,
-          )
-
-          if not status:
-              error_message = f'{SCRIPT_NAME} - {res}'
-              demisto.debug(error_message)
+          _, res = self._call_execute_command('core-api-get', args)
 
           self.packs_data[pack_id] = res
 
@@ -162,18 +154,7 @@ script: |
                   'body': [pack_data]
                   }
 
-          if self.instance_name:
-              args['using'] = self.instance_name
-
-          status, res = execute_command(
-              'demisto-api-post',
-              args,
-              fail_on_error=False,
-          )
-
-          if not status:
-              error_message = f'{SCRIPT_NAME} - {res}'
-              demisto.debug(error_message)
+          _, res = self._call_execute_command('core-api-post', args)
 
           try:
               self.packs_dependencies[pack_key] = res.get('response', {}).get('packs', [])[0] \
@@ -193,8 +174,16 @@ script: |
           Returns:
               str. The latest version of the pack.
           """
-          res = self.get_pack_data_from_marketplace(pack_id)
-          return res.get('response', {}).get('currentVersion')  # type: ignore[call-overload, union-attr]
+          try:
+              res = self.get_pack_data_from_marketplace(pack_id)
+              demisto.debug(f'raw pack_data_from_marketplace: {res}')
+              return res.get('response', {}).get('currentVersion')  # type: ignore[call-overload, union-attr]
+          except AttributeError as e:
+              demisto.debug(f'error trying to get {pack_id=}. {e}')
+              raise ValueError(f'Error while fetching {pack_id} from the marketplace. '
+                               f'Make sure the Core REST API integration is properly configured and {pack_id} exists. '
+                               f'Try running `!core-api-get uri=/contentpacks/marketplace/{pack_id}` in the playground. '
+                               f'Raw Response:\n{res}')
 
       def get_packs_data_for_installation(self, packs_to_install: List[Dict[str, str]]) -> List[Dict[str, str]]:
           """Creates a list of packs' data for the installation request.
@@ -237,14 +226,7 @@ script: |
 
               args = {'packs_to_install': str(pack_payload)}
 
-              if self.instance_name:
-                  args['using'] = self.instance_name
-
-              status, res = execute_command(
-                  'demisto-api-install-packs',
-                  args,
-                  fail_on_error=False,
-              )
+              status, res = self._call_execute_command('core-api-install-packs', args)
 
               if not status:
                   demisto.error(f'{SCRIPT_NAME} - Failed to install the pack {pack_id} - {str(res)}')
@@ -413,6 +395,7 @@ script: |
           )
 
       except Exception as e:
+          demisto.debug(f'error occured during script execution {e}')
           return_error(f'{SCRIPT_NAME} - Error occurred while setting up machine.\n{e}')
 
 

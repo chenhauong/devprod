@@ -11,7 +11,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -19,7 +19,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.10.6.33415
+dockerimage: demisto/python3:3.10.13.86272
 engineinfo: {}
 mainengineinfo: {}
 name: SetTime
@@ -28,14 +28,15 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('SetTime', 'start', __line__())
-  ### pack version: 1.11.61
-  import datetime
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
 
+
+  from datetime import datetime
 
 
   def set_time():
 
-      now = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
+      now = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
 
       fieldName = demisto.args()['fieldName']
 

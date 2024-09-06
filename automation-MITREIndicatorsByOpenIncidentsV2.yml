@@ -12,7 +12,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.5.0
-    itemVersion: 1.1.10
+    itemVersion: 1.1.40
     packID: FeedMitreAttackv2
     packName: MITRE ATT&CK
     packPropagationLabels:
@@ -20,7 +20,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.9.7.24076
+dockerimage: demisto/python3:3.10.13.83255
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
@@ -30,6 +30,7 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('MITREIndicatorsByOpenIncidentsV2', 'start', __line__())
+  demisto.debug('pack name = MITRE ATT&CK, pack version = 1.1.40')
 
 
   import traceback
@@ -45,7 +46,8 @@ script: |
           res = search_indicators.search_indicators_by_version(query=query, from_date=from_date, to_date=to_date)
 
           indicators = []
-          for ind in res.get('iocs', []):
+          iocs = res.get('iocs') if res.get('iocs') is not None else []
+          for ind in iocs:
               indicators.append({
                   'Value': dict_safe_get(ind, ['value']),
                   'Name': dict_safe_get(ind, ['CustomFields', 'mitreid']),

@@ -2,7 +2,7 @@ args:
 - default: true
   description: Output format - table, json or markdown. If omitted, default is markdown.
   name: outputformat
-comment: Pretty-print the contents of the playbook context
+comment: Pretty-print the contents of the playbook context.
 commonfields:
   id: PrintContext
   version: -1
@@ -10,7 +10,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -18,7 +18,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.10.6.33415
+dockerimage: demisto/python3:3.10.13.83255
 engineinfo: {}
 mainengineinfo: {}
 name: PrintContext
@@ -27,7 +27,7 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('PrintContext', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
 
 
 

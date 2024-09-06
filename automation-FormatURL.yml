@@ -13,7 +13,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.5.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -21,7 +21,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.10.11.54132
+dockerimage: demisto/python3:3.10.14.92207
 engineinfo: {}
 mainengineinfo: {}
 name: FormatURL
@@ -34,19 +34,26 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('FormatURL', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
+
+
+
+
+  ### GENERATED CODE ###: from FormatURLApiModule import *  # noqa: E402
+  # This code was inserted in place of an API module.
+  register_module_line('FormatURLApiModule', 'start', __line__(), wrapper=-3)
   import ipaddress
   import tldextract
   import urllib.parse
 
-  from typing import Match
+  from re import Match
 
 
   class URLError(Exception):
       pass
 
 
-  class URLType(object):
+  class URLType:
       """
       A class to represent an url and its parts
       """
@@ -67,7 +74,7 @@ script: |
               f'Path = {self.path}\nQuery = {self.query}\nFragment = {self.fragment}')
 
 
-  class URLCheck(object):
+  class URLCheck:
       """
       This class will build and validate a URL based on "URL Living Standard" (https://url.spec.whatwg.org)
       """
@@ -81,6 +88,8 @@ script: |
           '"': '"',
           '\'': '\'',
       }
+
+      no_fetch_extract = tldextract.TLDExtract(suffix_list_urls=(), cache_dir=None)
 
       def __init__(self, original_url: str):
           """
@@ -124,15 +133,18 @@ script: |
               # The URL seems to have a scheme indicated by presence of "//" or "%3A"
               self.scheme_check()
 
-          try:
-              # First slash after the scheme (if exists)
-              first_slash = self.modified_url[self.base:].index("/")
+          host_end_position = -1
+          special_chars = ("/", "?", "#")  # Any one of these states the end of the host / authority part in a URL
 
-          except ValueError:
-              first_slash = -1
+          for char in special_chars:
+              try:
+                  host_end_position = self.modified_url[self.base:].index(char)
+                  break  # index for the end of the part found, breaking loop
+              except ValueError:
+                  continue  # no reserved char found, URL has no path, query or fragment parts.
 
           try:
-              if "@" in self.modified_url[:first_slash]:
+              if "@" in self.modified_url[:host_end_position]:
                   # Checks if url has '@' sign in its authority part
 
                   self.user_info_check()
@@ -155,8 +167,12 @@ script: |
           if not self.done and self.fragment:
               self.fragment_check()
 
-          if self.quoted:
-              self.output = urllib.parse.unquote(self.output)
+          while '%' in self.output:
+              unquoted = urllib.parse.unquote(self.output)
+              if unquoted != self.output:
+                  self.output = unquoted
+              else:
+                  break
 
       def __str__(self):
           return f"{self.output}"
@@ -303,7 +319,7 @@ script: |
               elif self.modified_url[index] == "]":
 
                   if not self.inside_brackets:
-                      if self.check_domain(host) and all([char in self.brackets for char in self.modified_url[index:]]):
+                      if self.check_domain(host) and all(char in self.brackets for char in self.modified_url[index:]):
                           # Domain is valid with trailing "]" and brackets, the formatter will remove the extra chars
                           self.done = True
                           return
@@ -325,8 +341,7 @@ script: |
                           self.inside_brackets = False
                           break
 
-                      else:
-                          raise URLError(f"Only IPv6 is allowed within square brackets, not {host}")
+                      raise URLError(f"Only IPv6 is allowed within square brackets, not {host}")
 
               else:
                   self.output += self.modified_url[index]
@@ -520,14 +535,9 @@ script: |
           elif char in url_code_points:
               return True
 
-          elif unicode_code_points["start"] <= char <= unicode_code_points["end"]:
-              return True
+          return unicode_code_points['start'] <= char <= unicode_code_points['end']
 
-          else:
-              return False
-
-      @staticmethod
-      def check_domain(host: str) -> bool:
+      def check_domain(self, host: str) -> bool:
           """
           Checks if the domain is a valid domain (has at least 1 dot and a tld >= 2)
 
@@ -541,8 +551,6 @@ script: |
               URLError if the domain is invalid
           """
 
-          no_fetch_extract = tldextract.TLDExtract(suffix_list_urls=(), cache_dir=None)
-
           if host.endswith("."):
               host = host.rstrip(".")
 
@@ -552,7 +560,7 @@ script: |
           elif len(host.split(".")[-1]) < 2:
               raise URLError(f"Invalid tld for {host}")
 
-          elif not no_fetch_extract(host).suffix:
+          elif not self.no_fetch_extract(host).suffix:
               raise URLError(f"Invalid tld for {host}")
 
           else:
@@ -635,14 +643,15 @@ script: |
               self.modified_url = self.modified_url[beginning:end + 1]
 
 
-  class URLFormatter(object):
+  class URLFormatter:
 
       # URL Security Wrappers
-      ATP_regex = re.compile('https://.*?\.safelinks\.protection\.outlook\.com/\?url=(.*?)&', re.I)
+      ATP_regex = re.compile('.*?[.]safelinks[.]protection[.](?:outlook|office365)[.](?:com|us)/.*?[?]url=(.*?)&', re.I)
       fireeye_regex = re.compile('.*?fireeye[.]com.*?&u=(.*)', re.I)
       proofpoint_regex = re.compile('(?i)(?:proofpoint.com/v[1-2]/(?:url\?u=)?(.+?)(?:&amp|&d|$)|'
                                     'https?(?::|%3A)//urldefense[.]\w{2,3}/v3/__(.+?)(?:__;|$))')
-      trendmicro_regex = re.compile('https://.*?trendmicro\.com(?::443)?/wis/clicktime/.*?/?url==3d(.*?)&', re.I)
+      trendmicro_regex = re.compile('.*?trendmicro\.com(?::443)?/wis/clicktime/.*?/?url==3d(.*?)&',  # disable-secrets-detection
+                                    re.I)
 
       # Scheme slash fixer
       scheme_fix = re.compile("https?(:[/|\\\]*)")
@@ -713,8 +722,7 @@ script: |
               else:
                   wrapper = False
 
-          else:
-              return url
+          return url
 
       @staticmethod
       def extract_url_proofpoint(url: str) -> str:
@@ -730,7 +738,7 @@ script: |
 
           if url[0]:
               # Proofpoint v1 and v2
-              return urllib.parse.unquote((url[0].replace("-", "%").replace("_", "/")))
+              return urllib.parse.unquote(url[0].replace("-", "%").replace("_", "/"))
 
           else:
               # Proofpoint v3
@@ -752,7 +760,7 @@ script: |
           url = url.replace("[.]", ".")
           url = url.replace("[:]", ":")
           lower_url = url.lower()
-          if lower_url.startswith("hxxp") or lower_url.startswith('meow'):
+          if lower_url.startswith(('hxxp', 'meow')):
               url = re.sub(schemas, "http", url, count=1)
 
           def fix_scheme(match: Match) -> str:
@@ -771,6 +779,9 @@ script: |
           True if inout is a valid CIDR
 
       """
+      if not cidr[-1].isdigit():  # precaution incase the regex caught an extra char by mistake
+          cidr = cidr[:-1]
+
       try:
           ipaddress.ip_network(cidr)
           return True
@@ -778,11 +789,7 @@ script: |
           return False
 
 
-  def main():
-      raw_urls = demisto.args().get('input')
-
-      raw_urls = argToList(raw_urls, separator='|')
-
+  def format_urls(raw_urls: list[str]) -> list[str]:
       formatted_urls: List[str] = []
 
       for url in raw_urls:
@@ -804,19 +811,33 @@ script: |
 
           finally:
               formatted_urls.append(formatted_url)
+      return formatted_urls
 
-      output = [{
-          'Type': entryTypes['note'],
-          'ContentsFormat': formats['json'],
-          'Contents': [urls],
-          'EntryContext': {'URL': urls},
-      } for urls in formatted_urls]
-
-      for url in output:
-          demisto.results(url)
+  register_module_line('FormatURLApiModule', 'end', __line__(), wrapper=1)
+  ### END GENERATED CODE ###
 
 
-  if __name__ in ('__main__', '__builtin__', 'builtins'):
+  def main():
+      raw_urls = argToList(demisto.args().get('input'), separator='|')
+      try:
+          formatted_urls = format_urls(raw_urls)
+          output = [{
+              'Type': entryTypes['note'],
+              'ContentsFormat': formats['json'],
+              'Contents': [urls],
+              'EntryContext': {'URL': urls},
+          } for urls in formatted_urls]
+
+          for url in output:
+              demisto.results(url)
+
+      except Exception as e:
+          return_error(
+              f'Failed to execute the automation. Error: \n{str(e)}'
+          )
+
+
+  if __name__ in ('__main__', '__builtin__', 'builtins'):  # pragma: no-cover
       main()
 
   register_module_line('FormatURL', 'end', __line__())

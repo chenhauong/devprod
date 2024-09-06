@@ -1,12 +1,12 @@
 args:
 - default: true
-  description: URL to load and count ads on
+  description: URL to load and count ads on.
   name: url
   required: true
 - defaultValue: https://easylist.github.io/easylist/easylist.txt
-  description: Optional easylist to get ads from
+  description: Optional easylist to get ads from.
   name: easylist
-comment: Fetches the numbers of ads in the given url
+comment: Fetches the numbers of ads in the given url.
 commonfields:
   id: URLNumberOfAds
   version: -1
@@ -14,7 +14,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -22,31 +22,31 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.10.6.33415
+dockerimage: demisto/python3:3.10.13.83255
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
 name: URLNumberOfAds
 outputs:
 - contextPath: Ads.URL
-  description: Ad URL found
+  description: Ad URL found.
 - contextPath: Ads.Count
-  description: The count for the ad found
+  description: The count for the ad found.
 - contextPath: URL.Data
-  description: The URL we are checking
+  description: The URL we are checking.
 - contextPath: URL.AdsCount
-  description: The ads count on the URL
+  description: The ads count on the URL.
 pswd: ""
 runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('URLNumberOfAds', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
+
+
   import re
 
   import requests
-
-
 
   from functools import reduce
 

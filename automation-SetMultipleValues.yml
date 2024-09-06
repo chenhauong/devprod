@@ -17,7 +17,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -25,7 +25,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.10.6.33415
+dockerimage: demisto/python3:3.10.13.86272
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
@@ -35,14 +35,18 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('SetMultipleValues', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
 
 
 
 
   def main():
       keys = [k.strip() for k in demisto.args()['keys'].split(',')]
-      values = [v.strip() for v in demisto.args()['values'].split(',')]
+      values_str = demisto.args()['values']
+      if '[' in values_str and ']' in values_str:
+          values_str = f'[{values_str}]'
+      values = argToList(values_str)
+
       ec = {demisto.args()['parent'] + '(true)': dict(zip(keys, values))}
       demisto.results({'Type': entryTypes['note'], 'Contents': ec, 'ContentsFormat': formats['json'],
                        'HumanReadable': 'Keys ' + ','.join(keys) + ' set', 'EntryContext': ec})

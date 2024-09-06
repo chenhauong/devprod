@@ -20,7 +20,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -36,7 +36,7 @@ pswd: ""
 runas: DBotWeakRole
 runonce: false
 script: |
-  // pack version: 1.11.61
+  // pack version: 1.15.57
   var commandAvailable = function(command) {
       var ret = false;
       var allModules = getModulesForCommand(command);
@@ -51,7 +51,7 @@ script: |
       return ret;
   };
   var medium = (args.medium) ? args.medium.toLowerCase() : 'email';
-  var slackEnabled = commandAvailable('slack-send');
+  var slackEnabled = commandAvailable('send-notification');
   var mattermostEnabled = commandAvailable('mattermost-send');
   var emailEnabled = commandAvailable('send-mail');
 
@@ -86,7 +86,7 @@ script: |
           }
       }
       if ((medium === 'all' && slackEnabled) || medium === 'slack') {
-          res = executeCommand("slack-send", {to: user, message: args.message});
+          res = executeCommand("send-notification", {to: user, message: args.message});
           if (isError(res[0])) {
               entries.push(res[0]);
           } else {

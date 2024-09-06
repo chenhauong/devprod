@@ -1,9 +1,9 @@
 args:
 - default: true
-  description: output filename
+  description: output filename.
   name: fileName
   required: true
-- description: Array to export
+- description: Array to export.
   isArray: true
   name: csvArray
   required: true
@@ -11,7 +11,14 @@ args:
     list.
   isArray: true
   name: headers
-comment: Export given array to csv file
+- auto: PREDEFINED
+  defaultValue: UTF-8
+  description: 'UTF-16-BOM to encode Non English characters. Default is: UTF-8.'
+  name: codec
+  predefined:
+  - UTF-8
+  - UTF-16-BOM
+comment: Export given array to csv file.
 commonfields:
   id: ExportToCSV
   version: -1
@@ -19,7 +26,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -35,7 +42,7 @@ pswd: ""
 runas: DBotWeakRole
 runonce: false
 script: |
-  // pack version: 1.11.61
+  // pack version: 1.15.57
   function valueToValidString(value) {
       if (typeof value === 'number' || typeof value === 'boolean' ) {
           value = value.toString();
@@ -137,6 +144,10 @@ script: |
   }
 
   var csvString = convertToCSV(args.csvArray, args.headers);
+  if (args.codec === 'UTF-16-BOM') {
+      var utf16Bom = '\uFEFF';
+      csvString = utf16Bom + csvString;
+  }
   var createdFileID = saveFile(csvString);
 
   return {

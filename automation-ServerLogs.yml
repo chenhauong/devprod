@@ -1,4 +1,4 @@
-comment: Uses the ssh integration to grab the host server logs
+comment: Uses the ssh integration to grab the host server logs.
 commonfields:
   id: ServerLogs
   version: -1
@@ -6,7 +6,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 6.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -17,7 +17,7 @@ contentitemexportablefields:
 dependson:
   must:
   - remoteaccess|||ssh
-dockerimage: demisto/python3:3.10.9.46032
+dockerimage: demisto/python3:3.10.13.83255
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
@@ -27,11 +27,10 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('ServerLogs', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
+
+
   import re
-
-
-
 
 
   def execute_ssh_command():

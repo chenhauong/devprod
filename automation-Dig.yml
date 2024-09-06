@@ -22,7 +22,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 6.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -30,7 +30,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/netutils:1.0.0.43061
+dockerimage: demisto/netutils:1.0.0.86390
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
@@ -40,13 +40,13 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('Dig', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
+
+
   import re
   import subprocess
   import traceback
   from typing import Any, Dict
-
-
 
 
   ''' STANDALONE FUNCTION '''

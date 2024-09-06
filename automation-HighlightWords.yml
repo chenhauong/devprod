@@ -16,7 +16,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.31.89
+    itemVersion: 1.34.37
     packID: Base
     packName: Base
     packPropagationLabels:
@@ -24,7 +24,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.10.6.33415
+dockerimage: demisto/python3:3.10.12.66339
 engineinfo: {}
 mainengineinfo: {}
 name: HighlightWords
@@ -33,7 +33,7 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('HighlightWords', 'start', __line__())
-  ### pack version: 1.31.89
+  demisto.debug('pack name = Base, pack version = 1.34.37')
 
 
 

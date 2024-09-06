@@ -1,9 +1,9 @@
 args:
 - default: true
-  description: Input string to transform to JSON object
+  description: Input string to transform to JSON object.
   name: input
   required: true
-comment: Loads a json from string input, and returns a json object result
+comment: Loads a json from string input, and returns a json object result.
 commonfields:
   id: LoadJSON
   version: -1
@@ -11,7 +11,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -19,20 +19,20 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.9.8.24399
+dockerimage: demisto/python3:3.10.13.83255
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
 name: LoadJSON
 outputs:
 - contextPath: JsonObject
-  description: The JSON object loaded from input
+  description: The JSON object loaded from input.
 pswd: ""
 runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('LoadJSON', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
 
 
 

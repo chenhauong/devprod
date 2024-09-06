@@ -11,7 +11,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -19,7 +19,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/py3-tools:1.0.0.49703
+dockerimage: demisto/py3-tools:1.0.0.108682
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
@@ -29,10 +29,10 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('ExtractFQDNFromUrlAndEmail', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
 
 
-  from tld import get_tld
+  from tld import get_tld, Result
   from validate_email import validate_email
   from urllib.parse import urlparse, parse_qs, unquote
   import re
@@ -84,16 +84,16 @@ script: |
       return url
 
 
-  def get_fqdn(the_input):
+  def get_fqdn(input_url: str) -> str | None:
       fqdn = None
-      domain = get_tld(the_input, fail_silently=True, as_object=True)
+      domain_info = get_tld(input_url, fail_silently=True, as_object=True)
 
-      # handle fqdn if needed
-      if domain:
-          # get the subdomain using tld.subdomain
-          subdomain = domain.subdomain
-          if (subdomain):
-              fqdn = "{}.{}".format(subdomain, domain.fld)
+      if domain_info:
+          if not isinstance(domain_info, Result):
+              raise TypeError(f"Expected to get a Result object but got {type(domain_info)}")
+          subdomain = domain_info.subdomain
+          if subdomain:
+              fqdn = f"{subdomain}.{domain_info.fld}"
 
       return fqdn
 
@@ -127,7 +127,7 @@ script: |
           fqdn = get_fqdn(full_domain)
 
       # convert None to empty string if needed
-      fqdn = '' if not fqdn else fqdn
+      fqdn = fqdn if fqdn else ''
       return fqdn
 
 
@@ -145,7 +145,7 @@ script: |
 
 
   # python2 uses __builtin__ python3 uses builtins
-  if __name__ == "__builtin__" or __name__ == "builtins":
+  if __name__ in ('__main__', '__builtin__', 'builtins'):
       main()
 
   register_module_line('ExtractFQDNFromUrlAndEmail', 'end', __line__())

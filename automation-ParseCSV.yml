@@ -6,13 +6,13 @@ args:
   description: The name of the file. The file must be uploaded to the War Room.
   name: file
 - description: The column number that contains IP Addresses. Other IOC types should
-    not be in that column. (First column is column 0)
+    not be in that column. (First column is column 0).
   name: ips
 - description: The column number that contains domains. Other IOC types should not
-    be in that column. (First column is column 0)
+    be in that column. (First column is column 0).
   name: domains
 - description: The column number that contains file hashes. Other IOC types should
-    not be in that column. (First column is column 0)
+    not be in that column. (First column is column 0).
   name: hashes
 - auto: PREDEFINED
   defaultValue: "yes"
@@ -24,7 +24,7 @@ args:
   - "no"
 - defaultValue: utf-8
   description: The codec type used to parse the file. (some character sets are not
-    UTF-8 supported)
+    UTF-8 supported).
   name: codec
 comment: This script will parse a CSV file and place the unique IPs, Domains and Hashes
   into the context.
@@ -35,7 +35,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -43,7 +43,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.10.10.48392
+dockerimage: demisto/python3:3.10.14.99865
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
@@ -72,7 +72,7 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('ParseCSV', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
   import csv
 
 
@@ -129,7 +129,7 @@ script: |
 
                   counter = 0
                   for val in value:
-                      col_name = 'NO_NAME_COLUMN_{}'.format(counter)
+                      col_name = f'NO_NAME_COLUMN_{counter}'
                       row_dict[col_name] = val
                       counter += 1
 
@@ -152,7 +152,7 @@ script: |
           """
           first_row = arr[0]
           for counter in range(no_name_columns_counter):
-              first_row['NO_NAME_COLUMN_{}'.format(counter)] = ""
+              first_row[f'NO_NAME_COLUMN_{counter}'] = ""
 
       return arr
 
@@ -167,7 +167,7 @@ script: |
 
           if file_name.lower() == fn.lower():
               return entry
-      raise ValueError('Was unable to find "{}" in the war room. Please ensure the file was uploaded.'.format(file_name))
+      raise ValueError(f'Was unable to find "{file_name}" in the war room. Please ensure the file was uploaded.')
 
 
   csv_entry = None
@@ -199,7 +199,7 @@ script: |
       parse_ip = int(d_args['ips']) if 'ips' in d_args else -1
       parse_domain = int(d_args['domains']) if 'domains' in d_args else -1
       parse_hash = int(d_args['hashes']) if 'hashes' in d_args else -1
-      parse_all = True if d_args['parseAll'] == 'yes' else False
+      parse_all = d_args['parseAll'] == 'yes'
 
       if parse_ip == -1 and parse_domain == -1 and parse_hash == -1 and not parse_all:
           return_error('Select a field to extract or set parseAll=yes to parse the whole CSV file')
@@ -217,7 +217,7 @@ script: |
 
       res = demisto.getFilePath(entry_id)
       if not res:
-          return_error("Entry {} not found".format(entry_id))
+          return_error(f"Entry {entry_id} not found")
 
       file_path = res['path']
       file_name = res['name']
@@ -261,7 +261,7 @@ script: |
           if sum(1 for line in open(file_path)) <= 1:  # checks if there are less than one line
               return_error('No data to parse. CSV file might be empty or one-lined. try the `ParseAll=yes` argument.')
 
-          with open(file_path, 'rU') as f:
+          with open(file_path) as f:
               has_header = csv.Sniffer().has_header(f.read(1024))
               f.seek(0)
               csv_data = csv.reader(f)

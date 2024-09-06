@@ -1,5 +1,5 @@
 args:
-- description: The integration command to find
+- description: The integration command to find.
   name: command
   required: true
 - auto: PREDEFINED
@@ -12,7 +12,7 @@ args:
   - "true"
   - "false"
 comment: Finds which integrations implement a specific Demisto command.  The results
-  will be returned as comma-separated values (CSV).  The "Demisto REST API" integration
+  will be returned as comma-separated values (CSV).  The "Core REST API" integration
   must first be enabled.
 commonfields:
   id: ProvidesCommand
@@ -21,7 +21,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -31,9 +31,9 @@ contentitemexportablefields:
     toServerVersion: ""
 dependson:
   must:
-  - demisto-api-post
-  - demisto-api-get
-dockerimage: demisto/python3:3.10.6.33415
+  - core-api-post
+  - core-api-get
+dockerimage: demisto/python3:3.10.13.86272
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
@@ -43,7 +43,7 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('ProvidesCommand', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
 
 
   import sys
@@ -62,7 +62,7 @@ script: |
               ENABLED = False
 
       integration_commands_args = {"uri": "/settings/integration-commands"}
-      integration_commands_res = demisto.executeCommand("demisto-api-get", integration_commands_args)
+      integration_commands_res = demisto.executeCommand("core-api-get", integration_commands_args)
 
       integration_search = None
       if ENABLED is not None:
@@ -71,7 +71,7 @@ script: |
               "uri": "/settings/integration/search",
               "body": {"size": 1000}
           }
-          integration_search_res = demisto.executeCommand("demisto-api-post", integration_search_args)
+          integration_search_res = demisto.executeCommand("core-api-post", integration_search_args)
           try:
               integration_search = integration_search_res[0]['Contents']['response']
           except KeyError:
@@ -96,7 +96,7 @@ script: |
 
       for integration in integration_commands:
 
-          integration_name = integration['display']
+          integration_name = integration['name']
 
           if 'commands' in integration:
               for command in integration['commands']:

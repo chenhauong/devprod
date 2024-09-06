@@ -3,7 +3,9 @@ commonfields:
   id: Core REST API
   version: -1
 configuration:
-- defaultvalue: https://127.0.0.1
+- additionalinfo: For Cortex XSOAR 8 or Cortex XSIAM, use the Copy API URL button
+    on the API Keys page. For Cortex XSOAR 6, use the server URL.
+  defaultvalue: https://127.0.0.1
   display: Core Server URL
   name: url
   required: true
@@ -48,7 +50,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.3.21
+    itemVersion: 1.3.58
     packID: DemistoRESTAPI
     packName: Cortex REST API
     packPropagationLabels:
@@ -56,29 +58,31 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-description: Use Core REST APIs
+description: Use Core REST APIs.
 detaileddescription: |-
   ### Generate an API Key and API Key ID
 
 
-  In version 8.0.0 and above:
-  1. Go to Settings -> API Keys.
-  2. Click the **+New Key** button in the top right corner.
-  3. Generate a key of type **Advanced**.
-  4. Copy and paste the key.
-  5. From the ID column, copy the Key ID.
 
-  In version 6.x.x:
+
+
   1. Go to Settings -> Integrations -> API Keys.
   2. Click the **Get your key** button in the top left corner.
   3. Generate a key.
   4. Copy and paste the key.
-
   ### URL
-  In Cortex XSOAR 8.0.0 and above
-  1. Go to Settings -> API Keys.
+
+
+
+  1. Go to **Settings & Info** > **Settings** > **Integrations** > **API Keys**.
   2. Click the **Copy URL** button in the top right corner.
-  Provide API Key ID when using Cortex XSOAR 8.0.0 and above. If the version is 6.x.x, you can leave it empty .
+
+
+
+  Enter the server URL.
+
+  ### NOTE
+  You do not need to provide an API Key ID.
 
   ---
   [View Integration Documentation](https://xsoar.pan.dev/docs/reference/integrations/core-rest-api)
@@ -89,62 +93,68 @@ script:
   commands:
   - arguments:
     - default: true
-      description: Request URI (i.e. /incident)
+      description: Request endpoint (e.g. /incident or /public_api/v1/incidents/update_incident).
       name: uri
       required: true
-    - description: Body of HTTP POST
+    - description: Body of HTTP POST.
       name: body
-    description: send HTTP POST request
+    deprecated: true
+    description: Deprecated. Use core-api-post instead.
     execution: true
     name: demisto-api-post
   - arguments:
     - default: true
-      description: Request URI (i.e. /user)
+      description: Request endpoint (e.g. /user or /public_api/v1/rbac/get_users).
       name: uri
       required: true
-    description: send HTTP GET requests
+    deprecated: true
+    description: Deprecated. Use core-api-get instead.
     name: demisto-api-get
   - arguments:
     - default: true
-      description: Request URI (i.e. /user)
+      description: Request endpoint (e.g. /user).
       name: uri
       required: true
-    - description: Request body
+    - description: Request body.
       name: body
-    description: send HTTP PUT request
+    deprecated: true
+    description: Deprecated. Use core-api-put instead.
     execution: true
     name: demisto-api-put
   - arguments:
     - default: true
-      description: Request URI (i.e. /user)
+      description: Request endpoint (e.g. /user).
       name: uri
       required: true
-    description: send HTTP DELETE request
+    deprecated: true
+    description: Deprecated. Use core-api-delete instead.
     execution: true
     name: demisto-api-delete
   - arguments:
-    - description: Request URI
+    - description: Request endpoint.
       name: uri
       required: true
-    - description: File name of download
+    - description: File name of download.
       name: filename
-    - description: Description of file entry
+    - description: Description of file entry.
       name: description
-    description: Download files from Demisto server
+    deprecated: true
+    description: Deprecated. Use core-api-download instead.
     name: demisto-api-download
   - arguments:
-    - description: Request URI
+    - description: Request URI.
       name: uri
       required: true
-    - description: File entry ID
+    - description: File entry ID.
       name: entryID
       required: true
-    - description: Request body
+    - description: Request body.
       name: body
-    description: Send HTTP Multipart request to upload files to Demisto server
+    deprecated: true
+    description: Deprecated. Use core-api-multipart instead.
     name: demisto-api-multipart
   - arguments:
-    - description: IDs of the incidents to delete
+    - description: IDs of the incidents to delete.
       isArray: true
       name: ids
       required: true
@@ -153,7 +163,8 @@ script:
         "all" for all fields. WARNING: Setting all fields may result in big results.'
       isArray: true
       name: fields
-    description: Delete Demisto incidents
+    deprecated: true
+    description: Deprecated. Use core-delete-incidents instead.
     execution: true
     name: demisto-delete-incidents
   - arguments:
@@ -181,70 +192,76 @@ script:
       predefined:
       - "true"
       - "false"
-    description: Upload packs to Demisto server from url or the marketplace.
+    deprecated: true
+    description: Deprecated. Use core-api-install-packs instead.
     name: demisto-api-install-packs
   - arguments:
     - default: true
-      description: Request URI (i.e. /incident)
+      description: Request endpoint (e.g. /incident or /public_api/v1/incidents/update_incident).
       name: uri
       required: true
-    - description: Body of HTTP POST
+    - description: Body of HTTP POST.
       name: body
-    description: send HTTP POST request
+    description: send HTTP POST request.
     execution: true
     name: core-api-post
   - arguments:
     - default: true
-      description: Request URI (i.e. /user)
+      description: Request endpoint (e.g. /user or /public_api/v1/rbac/get_users).
       name: uri
       required: true
-    description: send HTTP GET requests
+    description: send HTTP GET requests.
     name: core-api-get
   - arguments:
     - default: true
-      description: Request URI (i.e. /user)
+      description: Request endpoint (e.g. /user).
       name: uri
       required: true
-    - description: Request body
+    - description: Request body.
       name: body
-    description: send HTTP PUT request
+    description: send HTTP PUT request.
     execution: true
     name: core-api-put
   - arguments:
     - default: true
-      description: Request URI (i.e. /user)
+      description: Request endpoint (e.g. /user).
       name: uri
       required: true
-    description: send HTTP DELETE request
+    description: send HTTP DELETE request.
     execution: true
     name: core-api-delete
   - arguments:
-    - description: Request URI
+    - description: Request endpoint.
       name: uri
       required: true
-    - description: File name of download
+    - description: File name of download.
       name: filename
-    - description: Description of file entry
+    - description: Description of file entry.
       name: description
-    description: Download files from core server
+    description: Download files from Core server.
     name: core-api-download
   - arguments:
-    - description: Request URI
+    - description: Request endpoint.
       name: uri
       required: true
-    - description: File entry ID
+    - description: File entry ID.
       name: entryID
       required: true
-    - description: Request body
+    - description: Request body.
       name: body
-    description: Send HTTP Multipart request to upload files to core server
+    description: Send HTTP Multipart request to upload files to Core server.
     name: core-api-multipart
   - arguments:
-    - description: IDs of the incidents to delete
+    - description: IDs of the incidents to delete.
       isArray: true
       name: ids
       required: true
-    description: Delete core incidents
+    - defaultValue: id,name,type,severity,status
+      description: 'Comma separated list of fields to return, case sensitive. Set
+        "all" for all fields. WARNING: Setting all fields may result in big results.'
+      isArray: true
+      name: fields
+    description: Delete Core incidents.
     execution: true
     name: core-delete-incidents
   - arguments:
@@ -272,23 +289,71 @@ script:
       predefined:
       - "true"
       - "false"
-    description: Upload packs to core server from url or the marketplace.
+    description: Upload packs to the core server from the URL or marketplace.
     name: core-api-install-packs
+  - arguments:
+    - description: The incident's ID.
+      name: incident_id
+    - description: The new file's name.
+      name: file_name
+    - description: The new file's content.
+      name: file_content
+    - description: The War Room entry ID of the pack zip file.
+      name: entry_id
+    description: Upload to the incident a file that the user provided according to
+      the entry_id or the content of the file.
+    name: core-api-file-upload
+  - arguments:
+    - description: The War Room entry ID of the file.
+      name: entry_id
+      required: true
+    description: Delete a file from Cortex XSOAR by entry_id.
+    name: core-api-file-delete
+  - arguments:
+    - description: The incident's ID.
+      name: incident_id
+      required: true
+    - description: The file's path.
+      name: file_path
+      required: true
+    - defaultValue: attachment
+      description: Name of the field (type attachment) from which to remove the attachment.
+      name: field_name
+    description: Delete the attachment from the incident and from the Cortex XSOAR
+      server.
+    name: core-api-file-attachment-delete
+  - arguments:
+    - description: The War Room entry ID of the file.
+      name: entry_id
+      required: true
+    description: Check if the file exists in Cortex XSOAR (Context) by entry_id.
+    name: core-api-file-check
+    outputs:
+    - contextPath: IsFileExists
+      description: Dictionary with EntryID as the key and boolean if the file exists
+        as a value in Context.
   runonce: false
   script: |
-    // pack version: 1.3.21
+    // pack version: 1.3.58
+
+    const MIN_HOSTED_XSOAR_VERSION = '8.0.0';
+
     var serverURL = params.url;
     if (serverURL.slice(-1) === '/') {
         serverURL = serverURL.slice(0,-1);
     }
 
-    if (params.auth_id || (params.creds_apikey && params.creds_apikey.identifier)) {
-        if (!serverURL.endsWith('/xsoar')){
-            serverURL = serverURL + '/xsoar'
+    // returns true if the current platform is XSIAM or XSOAR 8.0 and above.
+    isHosted = function () {
+        res = getDemistoVersion();
+        platform = res.platform;
+        if  (((platform === "xsoar" || platform === "xsoar_hosted") && (isDemistoVersionGE(MIN_HOSTED_XSOAR_VERSION))) || platform === "x2") {
+            return true
         }
+        return false
     }
 
-    var marketplace_url = params.marketplace_url? params.marketplace_url : 'https://marketplace.xsoar.paloaltonetworks.com/'
+    var marketplace_url = params.marketplace_url? params.marketplace_url : 'https://marketplace.xsoar.paloaltonetworks.com/content/packs/'
 
     getTenantAccountName = function () {
         // example: for 'https://account-testing-ysdkvou:443/acc_Test' will return 'acc_Test'
@@ -303,6 +368,9 @@ script:
             if (tenant_name !== "") {
                 account_name = 'acc_' + tenant_name
             }
+        }
+        else{
+            logDebug('getTenantAccountName: The server url ' + server_url + ' does not contain the expected tenant prefix acc_');
         }
         return account_name
     }
@@ -335,6 +403,14 @@ script:
 
     getRequestURL = function (uri) {
         var requestUrl = serverURL;
+
+        // only when using XSIAM or XSOAR >= 8.0 we will add the /xsoar suffix
+        // and only when it is not a /public_api endpoint.
+        if (isHosted()) {
+            if ((!serverURL.endsWith('/xsoar')) && (!uri.startsWith('/public_api'))) {
+                requestUrl += '/xsoar'
+            }
+        }
         if (params.use_tenant){
             requestUrl += '/' + getTenantAccountName();
         }
@@ -367,18 +443,26 @@ script:
         else if (params.auth_method == 'Advanced') {
             headers = getAdvancedAuthMethodHeaders(key, auth_id, 'multipart/form-data')
         }
-        var res = httpMultipart(
-            requestUrl,
-            entryID,
-            {
-                Headers: headers,
-            },
-            body,
-            params.insecure,
-            params.proxy,
-            undefined,
-            'file'
-        );
+
+        var res;
+        var tries = 0;
+        do {
+            res = httpMultipart(
+                requestUrl,
+                entryID,
+                {
+                    Headers: headers,
+                },
+                body,
+                params.insecure,
+                params.proxy,
+                undefined,
+                'file'
+            );
+            tries++;
+        } while (tries < 3 && res.Status.startsWith('timeout'));
+        logDebug("Ran httpMultipart() " + tries + " time(s)")
+
         if (res.StatusCode < 200 || res.StatusCode >= 300) {
             throw 'Core REST APIs - Request Failed.\nStatus code: ' + res.StatusCode + '.\nBody: ' + JSON.stringify(res) + '.';
         }
@@ -397,7 +481,7 @@ script:
     };
 
     var sendRequest = function(method, uri, body, raw) {
-        var requestUrl = getRequestURL(uri)
+        var requestUrl = getRequestURL(uri);
         var key = params.apikey? params.apikey : (params.creds_apikey? params.creds_apikey.password : '');
         if (key == ''){
             throw 'API Key must be provided.';
@@ -573,14 +657,238 @@ script:
                 logDebug(pack_id + ' pack installed successfully')
                 installed_packs.push(pack_id)
             }
-
-            return 'The following packs installed successfully: ' + installed_packs.join(", ")
+            if (installed_packs.length === 0) {
+                return 'No pack has been installed, please check that the pack name and version are correct.'
+            } else {
+                return 'The following packs installed successfully: ' + installed_packs.join(", ")
+            }
         }
     };
 
+
+    /* helper functions */
+
+    /**
+     * deletes an entry  by entryID by the key_to_delete
+    Arguments:
+        @param {String} file_content -- content of the file to upload
+        @param {String} file_name  -- name of the file in the dest incident
+        @param {String} key_to_delete  -- the name of the key to delete
+        @param {String} incident_id  -- the incident id
+    Returns:
+        CommandResults
+    """
+     */
+    var uploadFile= function(incident_id, file_content, file_name) {
+        var body = {
+            file:
+            {
+                value: [file_content],
+                options: {
+                    filename: [file_name],
+                    contentType: 'multipart/form-data'
+                }
+            },
+        };
+        var res = httpMultipart(`/entry/upload/${incident_id}`,file_content ,body);
+        if (isError(res[0])) {
+            throw res[0].Contents;
+        }
+        return res;
+    };
+
+
+    /**
+     * deletes a file  by entryID
+    Arguments:
+        @param {String} delete_artifact  -- in order to delete the artifact
+        @param {String} entry_id  -- entry ID of the file
+    Returns:
+        CommandResults
+    """
+     */
+    var deleteFileRequest = function (entry_id, delete_artifact = true) {
+        const body_content = JSON.stringify({
+            id: entry_id,
+            deleteArtifact: delete_artifact});
+
+        return sendRequest( 'POST', '/entry/delete/v2', body_content);
+    };
+
+
+    /**
+     * Sends http request to delete attachment
+    Arguments:
+        @param {String} incident_id  -- incident id to upload the file to
+        @param {String} file_path -- the file path to delete
+        @param {String} field_name  -- Name of the field (type attachment) you want to remove the attachment
+    Returns:
+        Results
+    """
+     */
+    var deleteAttachmentRequest=function(incident_id, attachment_path, field_name = 'attachment') {
+        body = JSON.stringify({
+            fieldName: field_name,
+            files: {
+              [attachment_path]: {
+                path: attachment_path
+              }
+            },
+            originalAttachments: [
+              {
+                path: attachment_path
+              }
+            ]
+          });
+        try{
+            return sendRequest('POST', `/incident/remove/${incident_id}`, body);
+        }
+        catch (e) {
+            throw new Error(`File already deleted or not found.\n${e}`);
+        }
+    };
+
+    /**
+     * Upload a new file
+    Arguments:
+        @param {String} incident_id  -- incident id to upload the file to
+        @param {String} file_content -- content of the file to upload
+        @param {String} file_name  -- name of the file in the dest incident
+        @param {String} entryID  -- entry ID of the file
+    Returns:
+        CommandResults -- Readable output
+    Note:
+        You can give either the entryID or file_name.
+    """
+     */
+    var fileUploadCommand = function(incident_id, file_content, file_name, entryID ) {
+        incident_id = (typeof incident_id === 'undefined')? investigation.id: incident_id;
+        if (incident_id!=investigation.id){
+            log(`Note that the file would be uploaded to ${incident_id} from incident ${investigation.id}`);
+        }
+        if ((!file_name) && (!entryID)) {
+            throw 'Either file_name or entry_id argument must be provided.';
+        }
+        var fileId = '';
+        if ((!entryID)) {
+            response = uploadFile(incident_id, file_content, file_name);
+            fileId = saveFile(file_content);
+        } else {
+            if (file_name === undefined) {
+                file_name = dq(invContext, `File(val.EntryID == ${entryID}).Name`);
+            }
+            if (Array.isArray(file_name)) {
+                if (file_name.length > 0) {
+                    file_name = file_name[0];
+                } else {
+                    file_name = undefined;
+                }
+            }
+            response_multi= sendMultipart(`/incident/upload/${incident_id}`,entryID,'{}');
+            return `The file ${entryID} uploaded successfully to incident ${incident_id}. `;
+            }
+        var md = `File ${file_name} uploaded successfully to incident ${incident_id}.`;
+        fileId = file_name ? fileId : entryID;
+        return {
+            Type: entryTypes.file,
+            FileID: fileId,
+            File: file_name,
+            Contents: file_content,
+            HumanReadable: md
+        };
+    };
+
+
+
+    /**
+     * Deletes a specific file.
+    Arguments:
+        @param {String} entryId  -- entry ID of the file
+    Returns:
+        Message that the file was deleted successfully + entry_id
+    """
+     */
+    // getting the context data
+    var fileDeleteCommand = function(EntryID) {
+        files =  invContext['File'];
+        if (!files){
+            throw new Error(`Files not found.`);
+        }
+        files = (invContext['File'] instanceof Array)? invContext['File']:[invContext['File']];
+        if (files[0]=='undefined'){
+            throw new Error(`Files not found.`);
+
+        }
+        var not_found = true
+        for (var i = 0 ;i <=Object.keys(files).length - 1;  i++) {
+            if (files[i]['EntryID'] == EntryID) {
+                not_found= false
+            }
+
+          }
+        if(not_found){
+            throw new Error(`File already deleted or not found.`);
+        }
+        deleteFileRequest(EntryID);
+        return  {Type: entryTypes.note,
+            Contents: '',
+            ContentsType: formats.json,
+            HumanReadable: `File ${EntryID} was deleted successfully.`}
+    }
+
+
+    /**
+     This command checks if the file is existing.
+        Arguments:
+            @param {String} EntryID  -- entry ID of the file
+        Returns:
+            Dictionary with EntryID as key and boolean if the file exists as value.
+    */
+    function coreApiFileCheckCommand(EntryID) {
+        files =  invContext['File']instanceof Array? invContext['File']:[invContext['File']];
+        var file_found = false;
+        var human_readable = `File ${EntryID} does not exist`;
+        if (typeof files['0'] !== 'undefined') {
+            for (var i = 0 ;i <=Object.keys(files).length - 1;  i++) {
+                if (files[i]['EntryID'] == EntryID) {
+                    file_found= true ;
+                    human_readable = `File ${EntryID} exists`;
+                }
+              }
+        }
+        return {
+            Type: entryTypes.note,
+            Contents: {[EntryID]:file_found},
+            HumanReadable: human_readable,
+            EntryContext: {[`IsFileExists(val.${EntryID}==${EntryID})`]:{[EntryID]:file_found}}
+        };
+
+
+    };
+
+    /**
+     This command deletes attachment from an incident.
+        Arguments:
+            @param {String} incident_id  -- incident id to delete the file from
+            @param {String} attachment_path -- the file path
+            @param {String} field_name  -- Name of the field (type attachment) you want to remove the attachment
+        Returns:
+            Show a message that the file was deleted successfully
+    */
+    var fileDeleteAttachmentCommand = function (attachment_path, incident_id, field_name){
+        incident_id = (typeof incident_id == 'undefined')? investigation.id: incident_id;
+        deleteAttachmentRequest(incident_id, attachment_path, field_name);
+        return `Attachment ${attachment_path} deleted `;
+    };
+
+
+
     switch (command) {
         case 'test-module':
-            sendRequest('GET','user');
+            res = sendRequest('GET','user');
+            if (res.response.id == undefined){
+                throw 'Test integration failed, The URL or The API key you entered might be incorrect.';
+            }
             return 'ok';
         case 'demisto-api-post':
         case 'core-api-post':
@@ -625,6 +933,14 @@ script:
         case 'demisto-api-install-packs':
         case 'core-api-install-packs':
             return installPacks(args.packs_to_install, args.file_url, args.entry_id, args.skip_verify, args.skip_validation);
+        case 'core-api-file-upload':
+            return fileUploadCommand(args.incident_id, args.file_content, args.file_name, args.entry_id)
+        case 'core-api-file-delete':
+            return fileDeleteCommand(args.entry_id);
+        case 'core-api-file-attachment-delete':
+            return fileDeleteAttachmentCommand(args.file_path, args.incident_id, args.field_name);
+        case 'core-api-file-check':
+            return coreApiFileCheckCommand(args.entry_id);
         default:
             throw 'Core REST APIs - unknown command';
     }
