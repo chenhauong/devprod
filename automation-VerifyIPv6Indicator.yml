@@ -11,7 +11,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.5.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -19,7 +19,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.10.4.30607
+dockerimage: demisto/python3:3.10.14.101217
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
@@ -29,15 +29,15 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('VerifyIPv6Indicator', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
 
 
-  import ipaddress
+  from ipaddress import IPv6Address
 
 
   def is_valid_ipv6_address(address):
       try:
-          ipaddress.IPv6Address(address)
+          IPv6Address(address)
           return True
       except ValueError:
           return False
@@ -45,11 +45,16 @@ script: |
 
   def main():
       the_input = demisto.args().get('input')
-
       the_input = argToList(the_input)
       entries_list = []
 
       for item in the_input:
+
+          demisto.info(f'Got IPv6 {item}')
+          item = re.sub('[^a-f0-9:%th.]+', '', item)
+
+          demisto.info(f'Changed item to {str(item)}')
+
           if is_valid_ipv6_address(item):
               entries_list.append(item)
           else:
