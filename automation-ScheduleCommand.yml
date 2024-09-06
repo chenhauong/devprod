@@ -11,6 +11,8 @@ args:
   name: endDate
 - description: The number of times to run. Optional.
   name: times
+- description: The GUID of the scheduled entry that runs the polling command.
+  name: scheduledEntryGuid
 comment: Schedule a command to run inside the war room at a future time (once or reoccurring)
 commonfields:
   id: ScheduleCommand
@@ -19,7 +21,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -34,7 +36,7 @@ pswd: ""
 runas: DBotWeakRole
 runonce: false
 script: |
-  // pack version: 1.11.61
+  // pack version: 1.15.57
   return executeCommand("scheduleEntry", args);
 scripttarget: 0
 system: true
