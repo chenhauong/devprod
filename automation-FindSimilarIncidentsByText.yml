@@ -42,6 +42,7 @@ args:
   - "true"
   - "false"
 comment: |-
+  Deprecated. Use DBotFindSimilarIncidents instead.
   Find similar incidents by text comparison - the algorithm based on TF-IDF method.
   To read more about this method: https://en.wikipedia.org/wiki/Tf%E2%80%93idf
 
@@ -56,7 +57,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.31.89
+    itemVersion: 1.34.37
     packID: Base
     packName: Base
     packPropagationLabels:
@@ -64,6 +65,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
+deprecated: true
 dockerimage: demisto/sklearn:1.0.0.49796
 enabled: true
 engineinfo: {}
@@ -87,8 +89,7 @@ runas: DBotWeakRole
 runonce: true
 script: |
   register_module_line('FindSimilarIncidentsByText', 'start', __line__())
-  ### pack version: 1.31.89
-  # type: ignore
+  demisto.debug('pack name = Base, pack version = 1.34.37')
   import dateutil.parser
   from sklearn.feature_extraction.text import TfidfVectorizer
   from sklearn.metrics.pairwise import linear_kernel
