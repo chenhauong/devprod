@@ -10,7 +10,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -18,7 +18,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.10.4.29342
+dockerimage: demisto/python3:3.10.13.86272
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
@@ -27,10 +27,17 @@ pswd: ""
 runas: DBotWeakRole
 runonce: false
 script: |
+  register_module_line('CloseInvestigationAsDuplicate', 'start', __line__())
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
+
+
   current_incident_id = demisto.incidents()[0]['id']
   duplicate_id = demisto.args()['duplicateId']
-  res = demisto.executeCommand("linkIncidents", {"incidentId":duplicate_id, "linkedIncidentIDs": current_incident_id, "action":"duplicate"})
+  res = demisto.executeCommand("linkIncidents", {"incidentId": duplicate_id, "linkedIncidentIDs": current_incident_id,
+                                                 "action": "duplicate"})
   demisto.results(res)
+
+  register_module_line('CloseInvestigationAsDuplicate', 'end', __line__())
 scripttarget: 0
 subtype: python3
 system: true
