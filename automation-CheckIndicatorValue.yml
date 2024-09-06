@@ -19,7 +19,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 6.5.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -27,7 +27,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.10.8.37753
+dockerimage: demisto/python3:3.10.13.86272
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
@@ -47,13 +47,12 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('CheckIndicatorValue', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
+
+
   import base64
   import urllib.parse
   from typing import Any, Dict, Optional
-
-
-
 
 
   def exists_indicator(indicator: str) -> bool:
