@@ -4,7 +4,7 @@ args:
   name: systems2files
   required: true
 comment: Take a list of devices and pull a specific file (given by path) from each
-  using SCP
+  using SCP.
 commonfields:
   id: SCPPullFiles
   version: -1
@@ -12,7 +12,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -23,7 +23,7 @@ contentitemexportablefields:
 dependson:
   must:
   - copy-from
-dockerimage: demisto/python3:3.10.6.33415
+dockerimage: demisto/python3:3.10.13.83255
 engineinfo: {}
 mainengineinfo: {}
 name: SCPPullFiles
@@ -32,7 +32,7 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('SCPPullFiles', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
 
 
 
