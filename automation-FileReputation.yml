@@ -1,9 +1,9 @@
 args:
 - default: true
-  description: File hash to look up - supports MD5, SHA1 and SHA256
+  description: File hash to look up - supports MD5, SHA1 and SHA256.
   name: file
   required: true
-comment: A context script for hash entities
+comment: A context script for hash entities.
 commonfields:
   id: FileReputation
   version: -1
@@ -11,7 +11,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -19,7 +19,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.10.9.40422
+dockerimage: demisto/python3:3.10.13.83255
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
@@ -29,7 +29,7 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('FileReputation', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
 
 
 
