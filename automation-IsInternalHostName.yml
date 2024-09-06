@@ -1,12 +1,8 @@
 args:
-- auto: PREDEFINED
-  default: true
+- default: true
   description: A comma-separated list of hostnames to check.
   isArray: true
   name: hostName
-  predefined:
-  - ""
-  - ""
   required: true
 - description: The regex pattern for the organization's hostname for example \w\w\w\d$|\w\w\w$.
     for hosts that look like pcx1 or pcx.
@@ -25,7 +21,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.11.61
+    itemVersion: 1.15.57
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -33,7 +29,7 @@ contentitemexportablefields:
     prevname: ""
     propagationLabels: []
     toServerVersion: ""
-dockerimage: demisto/python3:3.9.8.24399
+dockerimage: demisto/python3:3.10.13.72123
 enabled: true
 engineinfo: {}
 mainengineinfo: {}
@@ -51,7 +47,7 @@ runas: DBotWeakRole
 runonce: false
 script: |
   register_module_line('IsInternalHostName', 'start', __line__())
-  ### pack version: 1.11.61
+  demisto.debug('pack name = Common Scripts, pack version = 1.15.57')
 
 
   import re
