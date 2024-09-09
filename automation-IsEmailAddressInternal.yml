@@ -22,7 +22,7 @@ contentitemexportablefields:
   contentitemfields:
     definitionid: ""
     fromServerVersion: 5.0.0
-    itemVersion: 1.15.57
+    itemVersion: 1.15.59
     packID: CommonScripts
     packName: Common Scripts
     packPropagationLabels:
@@ -51,7 +51,7 @@ pswd: ""
 runas: DBotWeakRole
 runonce: false
 script: |
-  // pack version: 1.15.57
+  // pack version: 1.15.59
   function toBoolean(value) {
       if (typeof (value) === 'string') {
           if (['yes', 'true'].indexOf(value.toLowerCase()) != -1) {
