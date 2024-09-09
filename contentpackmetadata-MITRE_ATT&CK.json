@@ -47,12 +47,12 @@
 						"name": "mitre-get-indicators"
 					},
 					{
-						"description": "Gets the Attack Pattern value from the Attack Pattern ID in the Enterprise collection only.",
-						"name": "mitre-get-indicator-name"
-					},
-					{
 						"description": "Looks up the reputation of the indicator in the Enterprise collection only.",
 						"name": "attack-pattern"
+					},
+					{
+						"description": "Gets the Attack Pattern value from the Attack Pattern ID in the Enterprise collection only.",
+						"name": "mitre-get-indicator-name"
 					}
 				],
 				"description": "Use the MITRE ATT\u0026CK® feed to fetch MITRE’s Adversarial Tactics, Techniques, and Common Knowledge (ATT\u0026CK®) content. MITRE ATT\u0026CK is a globally-accessible knowledge base of adversary tactics and techniques based on real-world observations. The ATT\u0026CK knowledge base is used as a foundation for the development of specific threat models and methodologies in the private sector, in government, and in the cybersecurity product and service community.",
@@ -73,28 +73,28 @@
 		"widget": null,
 		"wizard": null
 	},
-	"currentVersion": "1.1.40",
+	"currentVersion": "1.1.41",
 	"definitionId": "",
 	"dependencies": {
 		"Base": {
 			"author": "Cortex XSOAR",
 			"certification": "certified",
 			"mandatory": true,
-			"minVersion": "1.34.35",
+			"minVersion": "1.34.37",
 			"name": "Base"
 		},
 		"CommonScripts": {
 			"author": "Cortex XSOAR",
 			"certification": "certified",
 			"mandatory": true,
-			"minVersion": "1.15.55",
+			"minVersion": "1.15.59",
 			"name": "Common Scripts"
 		}
 	},
 	"deprecated": false,
 	"description": "Fetches indicators from MITRE ATT\u0026CK.",
 	"disabledMonthly": false,
-	"downloads": 42106,
+	"downloads": 42527,
 	"eulaLink": "https://github.com/demisto/content/blob/master/LICENSE",
 	"fromServerVersion": "5.0.0",
 	"general": [
@@ -111,7 +111,7 @@
 			"name": "MITRE ATT\u0026CK"
 		}
 	],
-	"itemVersion": "1.1.40",
+	"itemVersion": "1.1.41",
 	"keywords": [
 		"MITRE",
 		"Feed",
@@ -140,15 +140,16 @@
 		"url": "https://www.paloaltonetworks.com/cortex"
 	},
 	"tags": [
-		"Plug \u0026 Fetch",
+		"Trending",
 		"Free Feed",
+		"Plug \u0026 Fetch",
 		"TIM",
 		"Threat Intelligence Management"
 	],
 	"toServerVersion": "",
-	"updated": "2024-08-28T09:34:45Z",
+	"updated": "2024-09-08T19:24:11Z",
 	"useCases": [],
 	"version": -1,
-	"versionInfo": "1317860",
+	"versionInfo": "1358619",
 	"videos": []
 }
